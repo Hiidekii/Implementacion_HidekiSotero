@@ -1,0 +1,25 @@
+# dlib==19.24.2
+# matplotlib==3.8.3
+# numpy==1.26.4
+# opencv_python==4.9.0.80
+# pandas==2.2.2
+# Pillow==10.3.0
+# retina_face==0.0.14
+# seaborn==0.13.2
+# torch==2.1.2
+# torchvision==0.16.2
+# tqdm==4.66.1
+# urllib3==2.2.1
+# dlib==19.24.2              # Compatible con Python 3.8
+matplotlib==3.5.3            # Última versión compatible con Python 3.8
+numpy==1.23.5                # Límite superior seguro para Py 3.8
+opencv-python==4.6.0.66      # Compatible con Py 3.8
+pandas==1.5.3                # Última versión compatible con Py 3.8
+Pillow==9.5.0                # Compatible y estable con Py 3.8
+retina-face==0.0.14          # Depende de numpy y opencv, compatible
+seaborn==0.11.2              # Última compatible con matplotlib 3.5 y pandas 1.5
+torch==1.13.1                # Última versión oficial compatible con Py 3.8
+torchvision==0.14.1          # Compatible con torch 1.13.1
+tqdm==4.66.1                 # Compatible con Python 3.8
+urllib3==1.26.18             # Últimas versiones 2.x requieren Py >=3.10
+scikit-learn>=1.3.0

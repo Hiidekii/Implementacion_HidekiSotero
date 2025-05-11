@@ -1,0 +1,5 @@
+*.DS_Store
+*__pycache__/
+modelo/datasets/rafdb_out/
+modelo/datasets/fer2013_out/
+*.pth
