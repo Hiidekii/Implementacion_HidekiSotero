@@ -41,7 +41,7 @@ face_classifier = cv2.CascadeClassifier(
 )
 
 # Cámara
-video_capture = cv2.VideoCapture(3)
+video_capture = cv2.VideoCapture(0)
 
 # Estilo de texto
 font = cv2.FONT_HERSHEY_SIMPLEX

@@ -1,4 +1,5 @@
 import cv2
+import cv2.data
 import torch
 import torch.nn.functional as F
 import torchvision.transforms as transforms
@@ -26,7 +27,7 @@ checkpoint = torch.load('../modelo/models/fer2013_model.pth', map_location=devic
 model.load_state_dict(checkpoint['model_state_dict'])
 model.eval()
 
-# Transformación de imagen
+# Transformación
 transform = transforms.Compose([
     transforms.Resize((64, 64)),
     transforms.Grayscale(num_output_channels=3),
@@ -34,33 +35,46 @@ transform = transforms.Compose([
     transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
 ])
 
-# Detector de rostros (Haar cascade)
+# Detector de rostros
 face_classifier = cv2.CascadeClassifier(
     cv2.data.haarcascades + 'haarcascade_frontalface_default.xml'
 )
 
-# Fuente para mostrar texto
+# Intenta abrir la cámara virtual de OBS usando DirectShow para mayor compatibilidad en Windows
+video_capture = cv2.VideoCapture(0, cv2.CAP_DSHOW)
+
+if not video_capture.isOpened():
+    print("No se pudo acceder al índice 1. Probando otros índices...")
+    for i in range(5):
+        cap = cv2.VideoCapture(i, cv2.CAP_DSHOW)
+        if cap.isOpened():
+            print(f"Cámara encontrada en el índice {i}")
+            video_capture = cap
+            break
+        cap.release()
+    else:
+        raise RuntimeError("No se pudo encontrar una cámara activa. Asegúrate de que OBS esté transmitiendo y que la cámara virtual esté habilitada.")
+
+# Estilo de texto
 font = cv2.FONT_HERSHEY_SIMPLEX
 font_scale = 1.2
 font_color = (0, 255, 0)
 thickness = 3
 line_type = cv2.LINE_AA
 
-# Historial de emociones detectadas
+# Historial de emociones detectadas por rostro
 last_emotions = []
 
-# Batch processing
-
+# Evaluar todos los rostros en batch
 def detect_emotion_batch(pil_images):
     tensors = [transform(img) for img in pil_images]
     batch_tensor = torch.stack(tensors).to(device)
     with torch.no_grad():
         outputs = model(batch_tensor)
         probabilities = F.softmax(outputs, dim=1).cpu().numpy()
-    return probabilities
+    return probabilities  # shape: [N, 7]
 
-# Detección y visualización de emociones
-
+# Detección y visualización
 def detect_bounding_box(video_frame, counter):
     global last_emotions
 
@@ -88,22 +102,21 @@ def detect_bounding_box(video_frame, counter):
             max_index = np.argmax(scores)
             max_emotion = emotions[max_index]
 
+            # Mostrar solo "Rostro N - Emoción"
             label = f"Rostro {i+1} - {max_emotion.capitalize()}"
             org = (x, y - 10)
             cv2.putText(video_frame, label, org, font, font_scale, font_color, thickness, line_type)
 
+            # Mostrar log en consola solo cada N frames
             if counter == 0:
                 timestamp = datetime.now().strftime("%I:%M%p").lstrip("0").lower()
                 print(f"Rostro {i+1}, {max_emotion.capitalize()}, {timestamp}")
 
     return faces
 
-# Abrir cámara virtual de OBS (ajustar el índice si es necesario)
-video_capture = cv2.VideoCapture(1)
-
 # Bucle principal
-evaluation_frequency = 5
 counter = 0
+evaluation_frequency = 5
 prev_time = time.time()
 
 while True:
@@ -113,11 +126,14 @@ while True:
     prev_time = current_time
 
     result, video_frame = video_capture.read()
-    if not result:
+    if not result or video_frame is None or video_frame.size == 0:
+        print("⚠️  No se recibió frame válido. Esperando...")
+        time.sleep(0.05)
         continue
 
     faces = detect_bounding_box(video_frame, counter)
 
+    # Mostrar FPS en pantalla (pero no imprimirlo en consola)
     cv2.putText(
         video_frame,
         f'FPS: {fps:.2f}',
@@ -129,7 +145,7 @@ while True:
         line_type
     )
 
-    cv2.imshow("ResEmoteNet - OBS Virtual Camera", video_frame)
+    cv2.imshow("ResEmoteNet (Batch) - OBS Virtual Camera", video_frame)
 
     if cv2.waitKey(1) & 0xFF == ord("q"):
         break
