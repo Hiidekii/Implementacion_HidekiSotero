@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Captura de Pantalla</title>
+    <!-- 🔗 Estilos definidos en styles.css -->
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <!-- 🎯 Estilizado con h1 (centrado y con margen) -->
+    <h1>Captura de Pantalla o Ventana</h1>
+
+    <!-- 🔘 Estilizado con #iniciarCaptura -->
+    <button id="iniciarCaptura">Iniciar captura</button>
+
+    <!-- 📦 Layout principal: video a la izquierda, emociones a la derecha -->
+    <div id="contenido"> <!-- estilizado con #contenido -->
+
+        <!-- 🎥 Contenedor relativo para superponer canvas sobre video -->
+        <div id="contenedor-video"> <!-- estilizado con #contenedor-video -->
+
+            <!-- 📺 Video fijo de 640x360 con sombra -->
+            <video id="video" autoplay playsinline></video> <!-- estilizado con #video -->
+
+            <!-- 🖍️ Canvas transparente superpuesto al video -->
+            <canvas id="overlay"></canvas> <!-- estilizado con #overlay -->
+        </div>
+
+        <!-- 📋 Panel lateral de logs de emociones -->
+        <div id="emociones"></div> <!-- estilizado con #emociones y #emociones p -->
+    </div>
+
+    <!-- 🧠 Lógica de captura y detección -->
+    <script src="script.js"></script>
+</body>
+
+</html>
