@@ -22,4 +22,6 @@ torch==1.13.1                # Última versión oficial compatible con Py 3.8
 torchvision==0.14.1          # Compatible con torch 1.13.1
 tqdm==4.66.1                 # Compatible con Python 3.8
 urllib3==1.26.18             # Últimas versiones 2.x requieren Py >=3.10
+
 scikit-learn>=1.3.0
+mss>=6.1.0
