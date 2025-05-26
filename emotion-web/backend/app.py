@@ -27,7 +27,7 @@ emotions = ['happy', 'surprise', 'sad', 'anger', 'disgust', 'fear', 'neutral']
 
 # Cargar modelo
 model = ResEmoteNet().to(device)
-checkpoint = torch.load('../models/fer2013_model.pth', map_location=device)
+checkpoint = torch.load('../../ResEmoteNet/modelo/models/fer2013_model.pth', map_location=device)
 model.load_state_dict(checkpoint['model_state_dict'])
 model.eval()
 
@@ -61,7 +61,8 @@ def detect_emotion():
         faces = face_cascade.detectMultiScale(gray, 1.1, 5, minSize=(40, 40))
 
         result = []
-        timestamp = datetime.now().strftime("%I:%M%p").lstrip("0").lower()  # Ej: 10:42pm
+        timestamp = datetime.now().strftime("%I:%M:%S%p").lstrip("0").lower()  # Ej: 10:42:17pm
+
 
         for i, (x, y, w, h) in enumerate(faces):
             crop = cv_img[y:y+h, x:x+w]

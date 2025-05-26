@@ -2,6 +2,7 @@ const btn = document.getElementById("iniciarCaptura");
 const video = document.getElementById("video");
 const overlay = document.getElementById("overlay");
 const ctxOverlay = overlay.getContext("2d");
+let intervalId = null;
 
 btn.addEventListener("click", async () => {
     try {
@@ -12,14 +13,38 @@ btn.addEventListener("click", async () => {
 
         video.srcObject = stream;
 
-        setInterval(() => {
+        // Si ya hay un intervalo corriendo, lo detienes antes de empezar uno nuevo
+        if (intervalId) clearInterval(intervalId);
+
+        intervalId = setInterval(() => {
             enviarFrame(video);
-        }, 1000); // Enviar cada 1 segundo
+        }, 1000); // cada 1 segundo
 
     } catch (err) {
         console.error("Error al capturar pantalla:", err);
         alert("No se pudo iniciar la captura.");
     }
+});
+
+const btnDetener = document.getElementById("detenerCaptura");
+
+btnDetener.addEventListener("click", () => {
+    if (intervalId) {
+        clearInterval(intervalId);
+        intervalId = null;
+        console.log("🛑 Detección detenida.");
+    }
+
+    // Detener el stream de video (opcional)
+    const stream = video.srcObject;
+    if (stream) {
+        stream.getTracks().forEach(track => track.stop());
+        video.srcObject = null;
+    }
+
+    // Limpiar canvas y logs (opcional)
+    ctxOverlay.clearRect(0, 0, overlay.width, overlay.height);
+    document.getElementById("emociones").innerHTML = "";
 });
 
 async function enviarFrame(video) {
