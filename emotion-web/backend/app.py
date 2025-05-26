@@ -53,16 +53,18 @@ def detect_emotion():
         img_data = base64.b64decode(data['image'].split(",")[1])
         pil_img = Image.open(io.BytesIO(img_data)).convert("RGB")
 
-        # Convertir a formato OpenCV
+        # Convertir a OpenCV
         cv_img = np.array(pil_img)
         cv_img = cv2.cvtColor(cv_img, cv2.COLOR_RGB2BGR)
+
+        # Tamaño real procesado
+        original_height, original_width = cv_img.shape[:2]
 
         gray = cv2.cvtColor(cv_img, cv2.COLOR_BGR2GRAY)
         faces = face_cascade.detectMultiScale(gray, 1.1, 5, minSize=(40, 40))
 
         result = []
-        timestamp = datetime.now().strftime("%I:%M:%S%p").lstrip("0").lower()  # Ej: 10:42:17pm
-
+        timestamp = datetime.now().strftime("%I:%M:%S%p").lstrip("0").lower()
 
         for i, (x, y, w, h) in enumerate(faces):
             crop = cv_img[y:y+h, x:x+w]
@@ -81,7 +83,11 @@ def detect_emotion():
                 "box": {"x": int(x), "y": int(y), "w": int(w), "h": int(h)}
             })
 
-        return jsonify({"result": result})
+        return jsonify({
+            "result": result,
+            "original_width": original_width,
+            "original_height": original_height
+        })
 
     except Exception as e:
         print("❌ Error al procesar la imagen:", e)

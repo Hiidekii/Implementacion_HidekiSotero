@@ -56,13 +56,19 @@ async function enviarFrame(video) {
     const ctx = canvas.getContext("2d");
     ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
 
-    const base64 = canvas.toDataURL("image/jpeg");
+    const base64 = canvas.toDataURL("image/png");
+    const originalWidth = video.videoWidth;
+    const originalHeight = video.videoHeight;
 
     try {
         const response = await fetch("http://localhost:5000/detect_emotion", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ image: base64 })
+            body: JSON.stringify({
+                image: base64,
+                width: originalWidth,
+                height: originalHeight
+            })
         });
 
         if (!response.ok) {
@@ -71,7 +77,7 @@ async function enviarFrame(video) {
 
         const data = await response.json();
         mostrarEmociones(data.result);
-        dibujarBoundingBoxes(data.result);
+        dibujarBoundingBoxes(data.result, data.original_width, data.original_height);
 
     } catch (error) {
         console.error("❌ Error al enviar frame:", error);
@@ -89,7 +95,7 @@ function mostrarEmociones(lista) {
     });
 }
 
-function dibujarBoundingBoxes(lista) {
+function dibujarBoundingBoxes(lista, originalWidth, originalHeight) {
     // Asegurarse de que el canvas tenga el mismo tamaño que el video
     overlay.width = video.videoWidth;
     overlay.height = video.videoHeight;
@@ -100,7 +106,15 @@ function dibujarBoundingBoxes(lista) {
             const { x, y, w, h } = item.box;
             ctxOverlay.strokeStyle = "#00FF00";
             ctxOverlay.lineWidth = 2;
-            ctxOverlay.strokeRect(x, y, w, h);
+            const scaleX = overlay.width / originalWidth;
+            const scaleY = overlay.height / originalHeight;
+
+            ctxOverlay.strokeRect(x * scaleX, y * scaleY, w * scaleX, h * scaleY);
+            ctxOverlay.fillStyle = "rgba(0,0,0,0.6)";
+            ctxOverlay.fillRect(x * scaleX, (y - 25) * scaleY, w * scaleX, 20 * scaleY);
+            ctxOverlay.fillStyle = "#ffffff";
+            ctxOverlay.font = `${14 * scaleY}px sans-serif`;
+            ctxOverlay.fillText(`${item.emocion}`, x * scaleX + 5, (y - 10) * scaleY);
 
             // Dibujar etiqueta de emoción arriba del cuadro
             ctxOverlay.fillStyle = "rgba(0,0,0,0.6)";
