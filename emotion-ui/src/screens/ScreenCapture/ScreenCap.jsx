@@ -1,6 +1,6 @@
 import React, { useRef, useEffect, useState } from 'react';
-import { Box, Button } from '@mui/material';
-import './ScreenCap.css'; // para animación fade-in
+import { Box } from '@mui/material';
+import EmotionLog from './components/EmotionLog';
 
 const ScreenCap = () => {
     const videoRef = useRef(null);
@@ -40,7 +40,6 @@ const ScreenCap = () => {
 
     const enviarFrame = async () => {
         const video = videoRef.current;
-        const overlay = overlayRef.current;
         if (!video || video.videoWidth === 0 || video.videoHeight === 0) return;
 
         const canvas = document.createElement('canvas');
@@ -100,10 +99,11 @@ const ScreenCap = () => {
             justifyContent: 'center',
             gap: '2rem',
             padding: '0.5rem 1rem',
+            backgroundColor: '#ffffff',
             minHeight: '100vh',
         }}>
             {/* Contenedor de video */}
-            <div id="contenedor-video" style={{
+            <Box id="contenedor-video" sx={{
                 position: 'relative',
                 flexGrow: 1,
                 aspectRatio: '16 / 9',
@@ -128,54 +128,10 @@ const ScreenCap = () => {
                     pointerEvents: 'none',
                     zIndex: 2,
                 }}></canvas>
-            </div>
+            </Box>
 
             {/* Columna de logs */}
-            <Box id="emociones-columna" sx={{
-                display: 'flex',
-                flexDirection: 'column',
-                width: '320px',
-                height: '576px',
-            }}>
-                <Box id="emociones" sx={{
-                    flexGrow: 1,
-                    overflowY: 'auto',
-                    padding: '1rem',
-                    backgroundColor: '#ffffff',
-                    border: '2px solid #007BFF',
-                    borderRadius: '8px',
-                    boxShadow: '0 4px 10px rgba(0, 123, 255, 0.2)',
-                    fontFamily: 'monospace',
-                    fontSize: '0.85rem',
-                    marginBottom: '1rem',
-                    display: 'flex',
-                    flexDirection: 'column',
-                }}>
-                    {logs.map((item, i) => (
-                        <p key={`${item.rostro}-${i}`} className="fade-in-log">
-                            {item.rostro} - {item.emocion} - {item.hora}
-                        </p>
-                    ))}
-                </Box>
-
-                <Box id="botones" sx={{
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    gap: '1rem',
-                    height: '15%',
-                }}>
-                    <Button fullWidth sx={{
-                        backgroundColor: '#007BFF',
-                        color: '#fff',
-                        '&:hover': { backgroundColor: '#0056b3' }
-                    }} onClick={iniciarCaptura}>Iniciar captura</Button>
-                    <Button fullWidth sx={{
-                        backgroundColor: '#dc3545',
-                        color: '#fff',
-                        '&:hover': { backgroundColor: '#b02a37' }
-                    }} onClick={detenerCaptura}>Detener captura</Button>
-                </Box>
-            </Box>
+            <EmotionLog logs={logs} onStart={iniciarCaptura} onStop={detenerCaptura} />
         </Box>
     );
 };

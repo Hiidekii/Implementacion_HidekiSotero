@@ -1,8 +1,9 @@
+/* styles/animations.css */
 .fade-in-log {
-    animation: fadeIn 0.4s ease-out;
+    animation: fadeInLog 0.4s ease-out;
 }
 
-@keyframes fadeIn {
+@keyframes fadeInLog {
     from {
         opacity: 0;
         transform: translateY(8px);

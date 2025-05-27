@@ -1,8 +1,10 @@
 import React, { useEffect, useRef } from 'react';
-import { Box, Button, Paper, Typography } from '@mui/material';
+import { Box, Button, Typography } from '@mui/material';
+import '../../../styles/animation.css';
 
 const EmotionLog = ({ logs, onStart, onStop }) => {
     const logContainerRef = useRef(null);
+
     const emotionColorMap = {
         Happy: '#ffc107',
         Sad: '#6c757d',
@@ -10,12 +12,18 @@ const EmotionLog = ({ logs, onStart, onStop }) => {
         Surprise: '#0dcaf0',
         Neutral: '#adb5bd',
         Disgust: '#198754',
-        Fear: '#6610f2'
+        Fear: '#6610f2',
     };
 
+    // Auto-scroll solo si ya está abajo
     useEffect(() => {
         if (logContainerRef.current) {
-            logContainerRef.current.scrollTop = logContainerRef.current.scrollHeight;
+            // Esperar al siguiente ciclo del render para asegurar que el contenido esté montado
+            const scrollToBottom = () => {
+                logContainerRef.current.scrollTop = logContainerRef.current.scrollHeight;
+            };
+            // Dos técnicas combinadas para asegurar ejecución después del render
+            requestAnimationFrame(() => setTimeout(scrollToBottom, 0));
         }
     }, [logs]);
 
@@ -48,25 +56,22 @@ const EmotionLog = ({ logs, onStart, onStop }) => {
                 }}
             >
                 {logs.map((item, i) => (
-                    <Paper
+                    <Box
                         key={`${item.rostro}-${i}-${item.hora}`}
-                        elevation={2}
                         className="fade-in-log"
                         sx={{
-                            padding: '0.4rem 0.6rem',
-                            marginBottom: '0.4rem',
-                            borderLeft: `5px solid ${emotionColorMap[item.emocion] || '#007BFF'}`,
-                            backgroundColor: '#f9f9f9',
-                            fontFamily: 'monospace',
-                            fontSize: '0.82rem',
-                            lineHeight: 1.2,
-                            transition: 'all 0.3s ease-out',
+                            marginBottom: '0.5rem',
+                            padding: '0.5rem 0.8rem',
+                            backgroundColor: '#eaf4ff',
+                            borderLeft: `4px solid ${emotionColorMap[item.emocion] || '#007BFF'}`,
+                            borderRadius: '4px',
+                            fontWeight: 'bold',
+                            color: '#000',
+                            transition: 'background-color 0.3s',
                         }}
                     >
-                        <Typography variant="body2" sx={{ fontWeight: 'bold' }}>
-                            {item.rostro}: {item.emocion} <span style={{ float: 'right', fontSize: '0.75rem' }}>{item.hora}</span>
-                        </Typography>
-                    </Paper>
+                        {item.rostro} - {item.emocion} - <span style={{ fontSize: '0.75rem' }}>{item.hora}</span>
+                    </Box>
                 ))}
             </Box>
 
