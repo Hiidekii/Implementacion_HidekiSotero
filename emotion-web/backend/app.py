@@ -10,6 +10,7 @@ import numpy as np
 import cv2
 import sys, os
 from datetime import datetime
+from ultralytics import YOLO
 
 # Setup Flask
 app = Flask(__name__)
@@ -40,10 +41,7 @@ transform = transforms.Compose([
                          std=[0.229, 0.224, 0.225]),
 ])
 
-# Cargar detector de rostros
-face_cascade = cv2.CascadeClassifier(
-    cv2.data.haarcascades + 'haarcascade_frontalface_default.xml'
-)
+yolo_face_model = YOLO('../../ResEmoteNet/modelo/models/yolomodel.pt')  # Actualiza el path correcto
 
 # Ruta para detección de emociones
 @app.route('/detect_emotion', methods=['POST'])
@@ -60,8 +58,14 @@ def detect_emotion():
         # Tamaño real procesado
         original_height, original_width = cv_img.shape[:2]
 
-        gray = cv2.cvtColor(cv_img, cv2.COLOR_BGR2GRAY)
-        faces = face_cascade.detectMultiScale(gray, 1.1, 5, minSize=(40, 40))
+        results = yolo_face_model.predict(cv_img, verbose=False)[0]
+
+        faces = []
+        for box in results.boxes:
+            x1, y1, x2, y2 = box.xyxy[0].cpu().numpy()
+            w = x2 - x1
+            h = y2 - y1
+            faces.append((int(x1), int(y1), int(w), int(h)))
 
         result = []
         timestamp = datetime.now().strftime("%I:%M:%S%p").lstrip("0").lower()

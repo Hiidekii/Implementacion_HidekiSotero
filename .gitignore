@@ -3,3 +3,4 @@
 modelo/datasets/rafdb_out/
 modelo/datasets/fer2013_out/
 *.pth
+*.pt

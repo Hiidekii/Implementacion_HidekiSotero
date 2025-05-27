@@ -4,38 +4,40 @@
 <head>
     <meta charset="UTF-8" />
     <title>Captura de Pantalla</title>
-    <!-- 🔗 Estilos definidos en styles.css -->
     <link rel="stylesheet" href="styles.css">
 </head>
 
 <body>
-    <!-- 🎯 Estilizado con h1 (centrado y con margen) -->
-    <h1>Captura de Pantalla o Ventana</h1>
-
-    <!-- 🔘 Estilizado con #iniciarCaptura -->
-    <div id="botones">
-        <button id="iniciarCaptura">Iniciar captura</button>
-        <button id="detenerCaptura">Detener captura</button>
-    </div>
-
-    <!-- 📦 Layout principal: video a la izquierda, emociones a la derecha -->
-    <div id="contenido"> <!-- estilizado con #contenido -->
-
-        <!-- 🎥 Contenedor relativo para superponer canvas sobre video -->
-        <div id="contenedor-video"> <!-- estilizado con #contenedor-video -->
-
-            <!-- 📺 Video fijo de 640x360 con sombra -->
-            <video id="video" autoplay playsinline></video> <!-- estilizado con #video -->
-
-            <!-- 🖍️ Canvas transparente superpuesto al video -->
-            <canvas id="overlay"></canvas> <!-- estilizado con #overlay -->
+    <!-- TOPBAR -->
+    <header id="topbar">
+        <div id="topbar-content">
+            <h1>Sistema de gestión de emociones en entornos educativos</h1>
+            <div id="nav-placeholder">
+                <!-- Botones de navegación cuando pasemos a react -->
+            </div>
         </div>
+    </header>
 
-        <!-- 📋 Panel lateral de logs de emociones -->
-        <div id="emociones"></div> <!-- estilizado con #emociones y #emociones p -->
+    <!-- Marco donde se ubica la captura de pantalla -->
+    <div id="contenido">
+        <div id="contenedor-video">
+            <!-- Video de captura de pantalla -->
+            <video id="video" autoplay playsinline></video>
+            <!-- Canvas para los bounding boxes -->
+            <canvas id="overlay"></canvas>
+        </div>
+        <!-- Panel lateral de logs de emociones -->
+        <div id="emociones-columna">
+            <div id="emociones"></div>
+            <!-- Botones para iniciar y parar captura -->
+            <div id="botones">
+                <button id="iniciarCaptura">Iniciar captura</button>
+                <button id="detenerCaptura">Detener captura</button>
+            </div>
+        </div>
     </div>
 
-    <!-- 🧠 Lógica de captura y detección -->
+    <!-- Lógica de captura y detección -->
     <script src="script.js"></script>
 </body>
 

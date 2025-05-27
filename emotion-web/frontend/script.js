@@ -86,13 +86,27 @@ async function enviarFrame(video) {
 
 function mostrarEmociones(lista) {
     const contenedor = document.getElementById("emociones");
-    contenedor.innerHTML = ""; // Limpiar contenido anterior
 
-    lista.forEach(item => {
+    // Detectar si el usuario ya está abajo del scroll
+    const estaAbajo = contenedor.scrollTop + contenedor.clientHeight >= contenedor.scrollHeight - 10;
+
+    lista.forEach((item) => {
         const p = document.createElement("p");
         p.textContent = `${item.rostro} - ${item.emocion} - ${item.hora}`;
+        p.classList.add("fade-in-log");
+
         contenedor.appendChild(p);
+
+        // Remover la clase de animación tras reproducirse
+        setTimeout(() => {
+            p.classList.remove("fade-in-log");
+        }, 400);
     });
+
+    // Si estaba abajo, hacer scroll automático
+    if (estaAbajo) {
+        contenedor.scrollTop = contenedor.scrollHeight;
+    }
 }
 
 function dibujarBoundingBoxes(lista, originalWidth, originalHeight) {
