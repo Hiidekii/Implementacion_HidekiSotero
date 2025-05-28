@@ -106,7 +106,7 @@ const EmotionLog = ({ logs, onStart, onStop }) => {
                         '&:hover': { backgroundColor: '#b02a37' },
                     }}
                 >
-                    Detener captura
+                    Pausar captura
                 </Button>
             </Box>
         </Box>

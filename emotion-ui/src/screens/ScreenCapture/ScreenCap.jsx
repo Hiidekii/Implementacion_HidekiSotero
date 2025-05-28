@@ -1,11 +1,15 @@
 import React, { useRef, useEffect, useState } from 'react';
-import { Box } from '@mui/material';
+import { Box, Typography } from '@mui/material';
 import EmotionLog from './components/EmotionLog';
+import EmotionPieChart from './components/EmotionPieChart';
+import EmotionWaveChart from './components/EmotionWaveChart';
 
 const ScreenCap = () => {
     const videoRef = useRef(null);
     const overlayRef = useRef(null);
     const [logs, setLogs] = useState([]);
+    const [frameEmotions, setFrameEmotions] = useState([]);
+    const [timelineData, setTimelineData] = useState([]);
     const [intervalId, setIntervalId] = useState(null);
 
     const iniciarCaptura = async () => {
@@ -23,7 +27,7 @@ const ScreenCap = () => {
         }
     };
 
-    const detenerCaptura = () => {
+    const pausarCaptura = () => {
         if (intervalId) {
             clearInterval(intervalId);
             setIntervalId(null);
@@ -35,7 +39,11 @@ const ScreenCap = () => {
 
         const ctx = overlayRef.current?.getContext('2d');
         if (ctx) ctx.clearRect(0, 0, overlayRef.current.width, overlayRef.current.height);
-        setLogs([]);
+
+        // NO limpiar datos para mantener logs, pie chart y timelines visibles
+        // setLogs([]);
+        // setFrameEmotions([]);
+        // setTimelineData([]);
     };
 
     const enviarFrame = async () => {
@@ -64,6 +72,34 @@ const ScreenCap = () => {
             const data = await response.json();
             if (data.result) {
                 setLogs(prev => [...prev, ...data.result]);
+                setFrameEmotions(data.result);
+
+                const total = data.result.length;
+                const emotionFrame = {
+                    timestamp: new Date().toLocaleTimeString(),
+                    Happy: 0,
+                    Sad: 0,
+                    Anger: 0,
+                    Surprise: 0,
+                    Neutral: 0,
+                    Disgust: 0,
+                    Fear: 0
+                };
+
+                data.result.forEach(({ emocion }) => {
+                    if (emotionFrame.hasOwnProperty(emocion)) {
+                        emotionFrame[emocion]++;
+                    }
+                });
+
+                // Normalizar a proporción (0 a 1) para que todas sumen 1 por frame
+                Object.keys(emotionFrame).forEach(key => {
+                    if (key !== 'timestamp') {
+                        emotionFrame[key] = total > 0 ? emotionFrame[key] / total : 0;
+                    }
+                });
+
+                setTimelineData(prev => [...prev, emotionFrame]);
                 dibujarBoundingBoxes(data.result);
             }
         } catch (error) {
@@ -101,8 +137,8 @@ const ScreenCap = () => {
             padding: '0.5rem 1rem',
             backgroundColor: '#ffffff',
             minHeight: '100vh',
+            flexWrap: 'wrap'
         }}>
-            {/* Contenedor de video */}
             <Box id="contenedor-video" sx={{
                 position: 'relative',
                 flexGrow: 1,
@@ -130,8 +166,28 @@ const ScreenCap = () => {
                 }}></canvas>
             </Box>
 
-            {/* Columna de logs */}
-            <EmotionLog logs={logs} onStart={iniciarCaptura} onStop={detenerCaptura} />
+            <EmotionLog logs={logs} onStart={iniciarCaptura} onStop={pausarCaptura} />
+            <Typography
+                variant="h6"
+                sx={{ width: '100%', textAlign: 'left' }}
+            >
+                Evolución de las emociones en tiempo real
+            </Typography>
+            <Box sx={{
+                display: 'flex',
+                flexDirection: 'row',
+                justifyContent: 'center',
+                gap: '2rem',
+                width: '100%',
+                flexWrap: 'wrap'
+            }}>
+                <Box sx={{ flex: 1, minWidth: 600, maxWidth: 500 }}>
+                    <EmotionPieChart frameEmotions={frameEmotions} />
+                </Box>
+                <Box sx={{ flex: 2, minWidth: 500 }}>
+                    <EmotionWaveChart timelineData={timelineData} />
+                </Box>
+            </Box>
         </Box>
     );
 };
