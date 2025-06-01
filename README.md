@@ -15,3 +15,12 @@ Entrenamiento del modelo:
 Resultados:
 - Se adjuntan las matrices de confusion de los mejores resultados obtenidos
 - El script de visualizar resultados utiliza el .pth para obtener los mejores parametros y la data previamente usada para imprimir las metricas y la matriz de confusión
+
+Uso del sistema de gestión emocional:
+- Para iniciar la interfaz gráfica es necesario acceder al directorio emotion-ui y ejecutar el comando 'npm start'
+- Para iniciar el backen es necesario ingresar al directorio emotion-back y a la carpeta backend para poder ejecutar el comano python 'app.py'
+- Una vez corriendo el frontend y el backend se puede hacer uso del sistema desde el navegador de preferencia.
+- Con el boton de "iniciar captura" se le pide al usuario seleccionar una ventana para compartir y el modelo se encarga de la detección en base al video de entrada
+- Con el boton de "pausar captura" se detiene momentaneamente la captura
+- En la derecha de la pantalla se muestran logs de los rostros detectados junto con la emoción y la hora
+- En la parte inferior se visualizan los dashboards tanto para los timelines que muestran la evolución de las emociones en la reunion como para el grafico pie que muestra sus frecuencias
