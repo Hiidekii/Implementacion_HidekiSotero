@@ -12,8 +12,7 @@ import Button from '@mui/material/Button';
 import { MenuItem } from '@mui/material';
 
 const pages = [
-    { name: 'Captura de pantalla', path: '/captura' },
-    { name: 'Análisis de video', path: '/video' },
+    { name: 'Captura de pantalla', path: '/captura' }, //Se pueden agregar las rutas aqui
 ];
 
 function ResponsiveAppBar() {
@@ -107,7 +106,7 @@ function ResponsiveAppBar() {
                     </Box>
 
                     <Box sx={{ flexGrow: 0 }}>
-                        <Avatar alt="Tu nombre" src="/ruta/a/tu-foto.jpg" />
+                        <Avatar alt="Hideki" src="/iamges/hideki.jpg" />
                     </Box>
                 </Toolbar>
             </Box>
