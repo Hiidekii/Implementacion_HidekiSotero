@@ -2,7 +2,6 @@ import os
 from PIL import Image, ImageOps
 import random
 
-# Define the dataset path and target number of images per class
 dataset_path = 'path/to/dataset'
 target_num_images = 1000 # Target number of images per class after augmentation
 
@@ -16,7 +15,6 @@ def augment_image(image):
     augmentation = random.choice(augmentations)
     return augmentation(image)
 
-# Group images by emotion
 images_by_emotion = {}
 for filename in os.listdir(dataset_path):
     if filename.endswith(('.jpg', '.png')):
@@ -25,7 +23,6 @@ for filename in os.listdir(dataset_path):
             images_by_emotion[emotion] = []
         images_by_emotion[emotion].append(filename)
 
-# Augment images for each emotion
 for emotion, images in images_by_emotion.items():
     num_images = len(images)
     
