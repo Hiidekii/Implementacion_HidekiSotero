@@ -34,7 +34,7 @@ const EmotionLog = ({ logs, onStart, onStop }) => {
                 display: 'flex',
                 flexDirection: 'column',
                 width: '320px',
-                height: '576px',
+                height: '720px',
             }}
         >
             <Box

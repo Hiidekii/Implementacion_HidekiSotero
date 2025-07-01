@@ -1,6 +1,6 @@
 import React from 'react';
 import { Box, Typography } from '@mui/material';
-import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
+import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from 'recharts';
 
 const EMOTIONS = [
     { label: 'Happy', emoji: '😊', color: '#ffc107' },
@@ -30,8 +30,13 @@ const EmotionWaveChart = ({ timelineData }) => {
                         <Box flexGrow={1} height={100}>
                             <ResponsiveContainer width="100%" height="100%">
                                 <AreaChart data={data} margin={{ top: 5, right: 5, left: 0, bottom: 5 }}>
+                                    <CartesianGrid stroke="#ccc" strokeDasharray="3 3" />
                                     <XAxis dataKey="time" hide />
-                                    <YAxis hide domain={[0, 'auto']} />
+                                    <YAxis
+                                        domain={[0, 1]}
+                                        ticks={[0, 0.25, 0.5, 0.75, 1]}
+                                        tick={{ fontSize: 12 }}
+                                    />
                                     <Tooltip />
                                     <Area type="monotone" dataKey={label} stroke={color} fill={color} isAnimationActive={false} />
                                 </AreaChart>

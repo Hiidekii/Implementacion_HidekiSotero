@@ -1,5 +1,5 @@
 import React, { useRef, useEffect, useState } from 'react';
-import { Box, Typography } from '@mui/material';
+import { Box, Typography, Button } from '@mui/material';
 import EmotionLog from './components/EmotionLog';
 import EmotionPieChart from './components/EmotionPieChart';
 import EmotionWaveChart from './components/EmotionWaveChart';
@@ -19,7 +19,7 @@ const ScreenCap = () => {
                 audio: false,
             });
             videoRef.current.srcObject = stream;
-            const id = setInterval(() => enviarFrame(), 1000);
+            const id = setInterval(() => enviarFrame(), 3000); // Enviar frame cada segundo
             setIntervalId(id);
         } catch (error) {
             alert('Error al capturar pantalla');
@@ -120,11 +120,12 @@ const ScreenCap = () => {
             ctx.lineWidth = 2;
             ctx.strokeRect(x, y, w, h);
 
+            const label = `${item.rostro} - ${item.emocion}`;
             ctx.fillStyle = 'rgba(0,0,0,0.6)';
-            ctx.fillRect(x, y - 25, w, 20);
+            ctx.fillRect(x, y - 30, w, 24);
             ctx.fillStyle = '#ffffff';
-            ctx.font = '14px sans-serif';
-            ctx.fillText(`${item.emocion}`, x + 5, y - 10);
+            ctx.font = 'bold 20px sans-serif';
+            ctx.fillText(label, x + 5, y - 10);
         });
     };
 
@@ -143,8 +144,8 @@ const ScreenCap = () => {
                 position: 'relative',
                 flexGrow: 1,
                 aspectRatio: '16 / 9',
-                maxWidth: '1024px',
-                maxHeight: '576px',
+                maxWidth: '1280px',
+                maxHeight: '720px',
                 width: '100%',
             }}>
                 <video ref={videoRef} autoPlay playsInline id="video" style={{
@@ -188,6 +189,17 @@ const ScreenCap = () => {
                     <EmotionWaveChart timelineData={timelineData} />
                 </Box>
             </Box>
+            <Button
+                variant="contained"
+                color="error"
+                sx={{ mt: 4 }}
+                onClick={() => {
+                    localStorage.setItem('emotionTimeline', JSON.stringify(timelineData));
+                    window.location.href = '/resumen';
+                }}
+            >
+                Finalizar captura
+            </Button>
         </Box>
     );
 };
