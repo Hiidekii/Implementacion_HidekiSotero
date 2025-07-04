@@ -33,18 +33,18 @@ transform = transforms.Compose([
 ])
 
 # Carga de los datasets (train, validation, test) deben tener las tres carpetas
-train_dataset = Four4All(csv_file='../datasets/fer2013_out/train_labels.csv',
-                         img_dir='../datasets/fer2013_out/train', transform=transform)
+train_dataset = Four4All(csv_file='../datasets/ferYrafdb_out/train_labels.csv',
+                         img_dir='../datasets/ferYrafdb_out/train', transform=transform)
 train_loader = DataLoader(train_dataset, batch_size=16, shuffle=True)
 train_image, train_label = next(iter(train_loader))
 
-val_dataset = Four4All(csv_file='../datasets/fer2013_out/validation_labels.csv', 
-                       img_dir='../datasets/fer2013_out/validation/', transform=transform)
+val_dataset = Four4All(csv_file='../datasets/ferYrafdb_out/validation_labels.csv', 
+                       img_dir='../datasets/ferYrafdb_out/validation/', transform=transform)
 val_loader = DataLoader(val_dataset, batch_size=16, shuffle=True)
 val_image, val_label = next(iter(val_loader))
 
-test_dataset = Four4All(csv_file='../datasets/fer2013_out/test_labels.csv', 
-                        img_dir='../datasets/fer2013_out/test', transform=transform)
+test_dataset = Four4All(csv_file='../datasets/ferYrafdb_out/test_labels.csv', 
+                        img_dir='../datasets/ferYrafdb_out/test', transform=transform)
 test_loader = DataLoader(test_dataset, batch_size=16, shuffle=False)
 test_image, test_label = next(iter(test_loader))
 
@@ -160,7 +160,7 @@ for epoch in range(num_epochs):
     if val_acc > best_val_acc:
         best_val_acc = val_acc
         patience_counter = 0 
-        torch.save(model.state_dict(), '../models/fer2013_model.pth')
+        torch.save(model.state_dict(), '../models/ferYrafdb_nobal_prueba_model.pth')
     else:
         patience_counter += 1
         print(f"No improvement in validation accuracy for {patience_counter} epochs.")
@@ -180,4 +180,4 @@ df = pd.DataFrame({
     'Test Accuracy': test_accuracies,
     'Validation Accuracy': val_accuracies
 })
-df.to_csv('result_four4all_80epch.csv', index=False)
+df.to_csv('ferYrafdb_nobal_prueba.csv', index=False)

@@ -2,10 +2,10 @@ import os
 import shutil
 
 # Ruta donde están las carpetas originales (train, test, validation)
-source_dir = '../datasets/rafdb_in'
+source_dir = '../datasets/ferYrafdbYaffect'
 
 # Ruta donde se guardarán las imágenes con nombres nuevos
-destination_dir = '../datasets/rafdb_out'
+destination_dir = '../datasets/ferYrafdbYaffect_out'
 
 # Diccionario para renombrar los prefijos según el tipo de conjunto
 folder_mapping = {

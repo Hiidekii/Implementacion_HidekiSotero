@@ -2,7 +2,7 @@ import os
 import pandas as pd
 
 # Ruta donde están las imágenes ya renombradas del conjunto que quieras procesar (por ejemplo validation)
-path = '../datasets/rafdb_out/validation'
+path = '../datasets/ferYrafdb_out/train'
 
 # Diccionario para mapear el nombre de la emoción al número de clase
 label_mapping = {
@@ -33,7 +33,7 @@ for filename in os.listdir(path):
 df = pd.DataFrame(image_data, columns=["ImageName", "Label"])
 
 # Guardamos el CSV en la ruta deseada
-csv_file_path = '../datasets/rafdb_out/validation_labels.csv'
+csv_file_path = '../datasets/ferYrafdb_out/train_labels.csv'
 df.to_csv(csv_file_path, index=False, header=False)
 
 print(f"CSV creado en: {csv_file_path}")
