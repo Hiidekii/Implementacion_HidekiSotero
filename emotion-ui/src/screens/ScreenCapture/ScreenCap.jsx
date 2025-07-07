@@ -116,7 +116,7 @@ const ScreenCap = () => {
             ctx.lineWidth = 2;
             ctx.strokeRect(x, y, w, h);
 
-            const label = `${item.rostro} - ${item.emocion}`;
+            const label = `${item.emocion}`;
             ctx.fillStyle = 'rgba(0,0,0,0.6)';
             ctx.fillRect(x, y - 30, w, 24);
             ctx.fillStyle = '#ffffff';
