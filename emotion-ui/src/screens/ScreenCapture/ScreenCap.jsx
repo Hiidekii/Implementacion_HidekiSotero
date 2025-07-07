@@ -1,5 +1,5 @@
 import React, { useRef, useEffect, useState } from 'react';
-import { Box, Typography, Button } from '@mui/material';
+import { Box, Typography, Button, TextField } from '@mui/material';
 import EmotionLog from './components/EmotionLog';
 import EmotionPieChart from './components/EmotionPieChart';
 import EmotionWaveChart from './components/EmotionWaveChart';
@@ -11,6 +11,8 @@ const ScreenCap = () => {
     const [frameEmotions, setFrameEmotions] = useState([]);
     const [timelineData, setTimelineData] = useState([]);
     const [intervalId, setIntervalId] = useState(null);
+    const [markerText, setMarkerText] = useState('');
+    const [markers, setMarkers] = useState([]);
 
     const iniciarCaptura = async () => {
         try {
@@ -19,7 +21,7 @@ const ScreenCap = () => {
                 audio: false,
             });
             videoRef.current.srcObject = stream;
-            const id = setInterval(() => enviarFrame(), 3000); // Enviar frame cada segundo
+            const id = setInterval(() => enviarFrame(), 3000);
             setIntervalId(id);
         } catch (error) {
             alert('Error al capturar pantalla');
@@ -39,11 +41,6 @@ const ScreenCap = () => {
 
         const ctx = overlayRef.current?.getContext('2d');
         if (ctx) ctx.clearRect(0, 0, overlayRef.current.width, overlayRef.current.height);
-
-        // NO limpiar datos para mantener logs, pie chart y timelines visibles
-        // setLogs([]);
-        // setFrameEmotions([]);
-        // setTimelineData([]);
     };
 
     const enviarFrame = async () => {
@@ -92,7 +89,6 @@ const ScreenCap = () => {
                     }
                 });
 
-                // Normalizar a proporción (0 a 1) para que todas sumen 1 por frame
                 Object.keys(emotionFrame).forEach(key => {
                     if (key !== 'timestamp') {
                         emotionFrame[key] = total > 0 ? emotionFrame[key] / total : 0;
@@ -168,12 +164,14 @@ const ScreenCap = () => {
             </Box>
 
             <EmotionLog logs={logs} onStart={iniciarCaptura} onStop={pausarCaptura} />
+
             <Typography
                 variant="h6"
                 sx={{ width: '100%', textAlign: 'left' }}
             >
                 Evolución de las emociones en tiempo real
             </Typography>
+
             <Box sx={{
                 display: 'flex',
                 flexDirection: 'row',
@@ -184,11 +182,44 @@ const ScreenCap = () => {
             }}>
                 <Box sx={{ flex: 1, minWidth: 600, maxWidth: 500 }}>
                     <EmotionPieChart frameEmotions={frameEmotions} />
+                    <Box display="flex" alignItems="center" gap={1} mt={30}>
+                        <TextField
+                            label="Agregar etiqueta temporal"
+                            value={markerText}
+                            onChange={(e) => setMarkerText(e.target.value)}
+                            size="small"
+                            fullWidth
+                        />
+                        <Button
+                            variant="outlined"
+                            onClick={() => {
+                                const timestamp = new Date().toLocaleTimeString();
+
+                                setTimelineData(prev => {
+                                    const updated = [...prev];
+                                    if (updated.length > 0) {
+                                        updated[updated.length - 1] = {
+                                            ...updated[updated.length - 1],
+                                            marker: markerText
+                                        };
+                                    }
+                                    return updated;
+                                });
+
+                                setMarkers(prev => [...prev, { timestamp, label: markerText }]);
+                                setMarkerText('');
+                            }}
+                        >
+                            Marcar
+                        </Button>
+                    </Box>
                 </Box>
+
                 <Box sx={{ flex: 2, minWidth: 500 }}>
                     <EmotionWaveChart timelineData={timelineData} />
                 </Box>
             </Box>
+
             <Button
                 variant="contained"
                 color="error"
